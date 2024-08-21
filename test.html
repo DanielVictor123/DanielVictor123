@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        main {
+            display: flex;
+            margin: 20px;
+            flex-wrap: wrap;
+            /* Allow wrapping on smaller screens */
+        }
+
+        article {
+            flex: 2;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-right: 20px;
+            min-width: 300px;
+            /* Minimum width for articles */
+        }
+
+        aside {
+            flex: 1;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            min-width: 250px;
+            /* Minimum width for aside */
+        }
+
+        .post {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fafafa;
+            transition: background 0.3s;
+        }
+
+        .post:hover {
+            background: #f0f8ff;
+        }
+
+        .comment {
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #fff;
+            transition: background 0.3s;
+        }
+
+        .comment:hover {
+            background: #f0f8ff;
+        }
+
+        .widget {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+        textarea,
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        h2,
+        h3 {
+            color: #007bff;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .user-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .recent-posts ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recent-posts li {
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .category-list,
+        .tag-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .category-item,
+        .tag-item {
+            display: flex;
+            align-items: center;
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .category-item:hover,
+        .tag-item:hover {
+            background: #0056b3;
+        }
+
+        .category-item img,
+        .tag-item img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .search-bar {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            main {
+                flex-direction: column;
+                /* Stack elements on small screens */
+            }
+
+            article {
+                margin-right: 0;
+                /* Remove right margin */
+                margin-bottom: 20px;
+                /* Add bottom margin for spacing */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>My Blog</h1>
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search by categories, tags, or posts..."
+                oninput="searchPosts()" />
+        </div>
+    </header>
+    <main>
+        <article id="posts">
+            <h2>Blog Posts</h2>
+            <div id="postContainer"></div>
+            <select id="postCategory">
+                <option value="">Select Category</option>
+                <option value="Coding Boot-camp">Coding Boot-camp</option>
+                <option value="Admission">Admission</option>
+                <option value="Summer Holiday Coaching">
+                    Summer Holiday Coaching
+                </option>
+            </select>
+            <input type="file" id="postPhoto" accept="image/*" />
+            <input type="text" id="postName" placeholder="Your Name" />
+            <textarea id="newPost" placeholder="Write a new post..."></textarea>
+            <button onclick="addPost()">Post</button>
+        </article>
+        <aside>
+            <div class="widget">
+                <h3>Categories</h3>
+                <div class="category-list" id="categoryList"></div>
+            </div>
+            <div class="widget">
+                <h3>Tags</h3>
+                <div class="tag-list">
+                    <div class="tag-item" onclick="filterPostsByTag('Tag1')">
+                        <img src="tag1.png" alt="Tag1" />
+                        Tag1
+                    </div>
+                    <div class="tag-item" onclick="filterPostsByTag('Tag2')">
+                        <img src="tag2.png" alt="Tag2" />
+                        Tag2
+                    </div>
+                    <div class="tag-item" onclick="filterPostsByTag('Tag3')">
+                        <img src="tag3.png" alt="Tag3" />
+                        Tag3
+                    </div>
+                    <div class="tag-item" onclick="filterPostsByTag('')">
+                        <img src="alltags.png" alt="All Tags" />
+                        All Tags
+                    </div>
+                </div>
+            </div>
+            <div class="widget recent-posts">
+                <h3>Recent Posts</h3>
+                <ul id="recentPosts"></ul>
+            </div>
+        </aside>
+    </main>
+    <script>
+        let posts = JSON.parse(localStorage.getItem("posts")) || [];
+        let currentCategory = "";
+
+        function addPost() {
+            const postContent = document.getElementById("newPost").value;
+            const postName = document.getElementById("postName").value;
+            const postPhoto = document.getElementById("postPhoto").files[0];
+            const postCategory = document.getElementById("postCategory").value;
+            const postDate = new Date().toLocaleDateString();
+
+            if (postContent && postName && postCategory) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const post = {
+                        content: postContent,
+                        name: postName,
+                        photo: event.target.result,
+                        date: postDate,
+                        category: postCategory,
+                        tags: [],
+                        comments: [],
+                    };
+                    posts.push(post);
+                    localStorage.setItem("posts", JSON.stringify(posts));
+                    document.getElementById("newPost").value = "";
+                    document.getElementById("postName").value = "";
+                    document.getElementById("postPhoto").value = "";
+                    document.getElementById("postCategory").value = "";
+                    renderPosts();
+                    updateCategoryCounts(); // Update category counts after adding a post
+                };
+                reader.readAsDataURL(postPhoto);
+            } else {
+                alert("Please fill in all fields.");
+            }
+        }
+
+        function renderPosts(filterPostsArray = posts) {
+            const postContainer = document.getElementById("postContainer");
+            postContainer.innerHTML = "";
+
+            if (filterPostsArray.length === 0) {
+                postContainer.innerHTML = "<p>No posts available for this category.</p>";
+            } else {
+                filterPostsArray.forEach((post, index) => {
+                    const postDiv = document.createElement("div");
+                    postDiv.innerHTML = `
+                <div class="post">
+                    <div class="user-info">
+                        <img src="${post.photo}" alt="${post.name}'s photo">
+                        <strong>${post.name}</strong> <em>${post.date}</em>
+                    </div>
+                    <p>${post.content}</p>
+                    <input type="file" id="commentPhoto-${index}" accept="image/*">
+                    <input type="text" id="commentName-${index}" placeholder="Your Name">
+                    <textarea id="commentInput-${index}" placeholder="Add a comment..."></textarea>
+                    <button onclick="addComment(${index})">Comment</button>
+                    <button onclick="deletePost(${index})">Delete Post</button>
+                    <div class="comments">${renderComments(post.comments, index)}</div>
+                </div>
+            `;
+                    postContainer.appendChild(postDiv);
+                });
+            }
+            updateRecentPosts();
+        }
+
+        function deletePost(postIndex) {
+            posts.splice(postIndex, 1); // Remove the post from the array
+            localStorage.setItem("posts", JSON.stringify(posts)); // Update local storage
+            renderPosts(currentCategory); // Re-render posts to reflect the change
+            updateCategoryCounts(); // Update category counts after deleting a post
+        }
+
+        function updateCategoryCounts() {
+            const categoryList = document.getElementById("categoryList");
+            categoryList.innerHTML = ""; // Clear existing categories
+
+            const categories = [
+                "Coding Boot-camp",
+                "Admission",
+                "Summer Holiday Coaching",
+            ];
+
+            categories.forEach((category) => {
+                const count = posts.filter((post) => post.category === category).length;
+                const categoryDiv = document.createElement("div");
+                categoryDiv.className = "category-item";
+                categoryDiv.onclick = () => filterPosts(category);
+                categoryDiv.innerHTML = `
+            <img src="${category.toLowerCase().replace(/ /g, '-')}.png" alt="${category}" />
+            ${category} (${count})
+        `;
+                categoryList.appendChild(categoryDiv);
+            });
+        }
+
+
+        function filterPosts(category) {
+            currentCategory = category;
+            const filteredPosts = category
+                ? posts.filter((post) => post.category === category)
+                : posts;
+            renderPosts(filteredPosts);
+        }
+
+        function addComment(postIndex) {
+            const commentTextarea = document.getElementById(
+                `commentInput-${postIndex}`
+            );
+            const commentName = document.getElementById(
+                `commentName-${postIndex}`
+            ).value;
+            const commentPhoto = document.getElementById(
+                `commentPhoto-${postIndex}`
+            ).files[0];
+            const commentDate = new Date().toLocaleDateString();
+
+            if (commentTextarea.value && commentName) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const comment = {
+                        content: commentTextarea.value,
+                        name: commentName,
+                        photo: event.target.result,
+                        date: commentDate,
+                    };
+                    posts[postIndex].comments.push(comment);
+                    localStorage.setItem("posts", JSON.stringify(posts));
+                    commentTextarea.value = "";
+                    document.getElementById(`commentName-${postIndex}`).value = "";
+                    document.getElementById(`commentPhoto-${postIndex}`).value = "";
+                    renderPosts(currentCategory);
+                };
+                reader.readAsDataURL(commentPhoto);
+            }
+        }
+
+        function renderComments(comments, postIndex) {
+            return comments
+                .map(
+                    (comment, index) => `
+                    <div class="comment">
+                        <div class="user-info">
+                            <img src="${comment.photo}" alt="${comment.name}'s photo">
+                            <strong>${comment.name}</strong> <em>${comment.date}</em>
+                        </div>
+                        <p>${comment.content}</p>
+                        <button onclick="deleteComment(${postIndex}, ${index})">Delete</button>
+                    </div>
+                `
+                )
+                .join("");
+        }
+
+        function deleteComment(postIndex, commentIndex) {
+            posts[postIndex].comments.splice(commentIndex, 1); // Remove the comment from the array
+            localStorage.setItem("posts", JSON.stringify(posts)); // Update local storage
+            renderPosts(currentCategory); // Re-render posts to reflect the change
+        }
+
+
+        function updateRecentPosts() {
+            const recentPosts = document.getElementById("recentPosts");
+            recentPosts.innerHTML = "";
+            posts.slice(-3).forEach((post, index) => {
+                const recentPost = document.createElement("li");
+                recentPost.innerText = `Post ${posts.length - 3 + index + 1}: ${post.content
+                    }`;
+                recentPosts.appendChild(recentPost);
+            });
+        }
+
+        function searchPosts() {
+            const query = document.getElementById("search").value.toLowerCase();
+            const filteredPosts = posts.filter(
+                (post) =>
+                    post.content.toLowerCase().includes(query) ||
+                    post.category.toLowerCase().includes(query) ||
+                    (post.tags &&
+                        post.tags.some((tag) => tag.toLowerCase().includes(query)))
+            );
+            renderPosts(filteredPosts.length > 0 ? filteredPosts : []);
+        }
+
+        window.onload = function () {
+            renderPosts();
+            updateCategoryCounts(); // Initialize category counts on load
+        };
+    </script>
+</body>
+
+</html>

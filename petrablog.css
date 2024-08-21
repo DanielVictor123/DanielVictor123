@@ -1,0 +1,110 @@
+.blog-section {
+  padding: 50px 0;
+}
+
+.blog-card {
+  position: relative;
+  width: 100%; /* Full width of the column */
+  height: 500px; /* Set height to match the image */
+  overflow: hidden;
+  margin-bottom: 20px; /* Space between cards */
+  cursor: pointer;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px #37b3ed; /* Shadow effect */
+}
+
+.card1 {
+  background: url(/codingbootcamp/Art2.webp);
+  background-repeat: no-repeat;
+  background-size: cover;
+  visibility: visible;
+  opacity: 2;
+  background-position: center;
+}
+
+.card2 {
+  background: url(/enrollment.jpg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  visibility: visible;
+  opacity: 2;
+  background-position: center;
+}
+
+.card3 {
+  background: url(/codingbootcamp/Coding_bootcamp.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  visibility: visible;
+  opacity: 2;
+  background-position: center;
+}
+
+.bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  opacity: 0.7; /* Adjust for visibility */
+}
+
+.card-content {
+  position: relative;
+  z-index: 1;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  background: #37b3ed74;
+  bottom: 0;
+}
+
+.card-content h3 {
+  font-size: 1.1em;
+  color: #fff;
+}
+
+.card-content p {
+  font-size: 0.9em;
+  margin-top: 5px;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .blog-card {
+    height: 200px; /* Adjust height for smaller screens */
+  }
+}
+
+/* .slideshow-container {
+    position: relative;
+    width: 600px; /* Adjust as needed 
+    height: 400px; /* Adjust as needed 
+    overflow: hidden;
+}
+
+.slide {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.slideshow-container:hover .video {
+    display: block;
+}
+
+.slideshow-container:hover .slide {
+    display: none;
+} */
