@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Page</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Your existing styles */
+      body {
+        font-family: "Roboto", sans-serif;
+        background: #f0f4f8;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      header {
+        margin: 30px;
+        background: #4480c0;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(20, 157, 221, 0.75);
+      }
+
+      main {
+        display: flex;
+        margin: 20px;
+        flex-wrap: wrap;
+      }
+
+      article {
+        flex: 2;
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(20, 157, 221, 0.75);
+        margin-right: 20px;
+        min-width: 300px;
+      }
+
+      aside {
+        flex: 1;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(20, 157, 221, 0.75);
+        min-width: 250px;
+      }
+
+      .post {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background: #fafafa;
+        transition: background 0.3s;
+      }
+
+      .post:hover {
+        background: #f0f8ff;
+      }
+
+      .comment {
+        margin: 10px 0;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background: #fff;
+        transition: background 0.3s;
+      }
+
+      .comment:hover {
+        background: #f0f8ff;
+      }
+
+      button {
+        background: #4480c0;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.3s;
+        font-weight: bold;
+      }
+
+      button:hover {
+        background: #0056b3;
+        transform: scale(1.05);
+      }
+
+      textarea,
+      input[type="text"],
+      input[type="file"],
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-top: 10px;
+        box-sizing: border-box;
+      }
+
+      h2,
+      h3 {
+        color: #4480c0;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .user-info img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+
+      .category-list,
+      .tag-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .category-item,
+      .tag-item {
+        display: flex;
+        align-items: center;
+        background: #4480c0;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .category-item:hover,
+      .tag-item:hover {
+        background: #0056b3;
+      }
+
+      .category-item img,
+      .tag-item img {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header id="blog">
+      <h1 style="color: #152638">Petra Schools Blog-Details</h1>
+      <div class="search-bar">
+        <input
+          type="text"
+          id="search"
+          placeholder="Search by categories, tags, or posts..."
+          oninput="searchPosts()"
+        />
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <article id="posts">
+          <h2>Blog Posts</h2>
+          <div id="postContainer"></div>
+          <select id="postCategory">
+            <option value="">Select Category</option>
+            <option value="Coding Boot-camp">Coding Boot-camp</option>
+            <option value="Admission">Admission</option>
+            <option value="Summer Holiday Coaching">
+              Summer Holiday Coaching
+            </option>
+          </select>
+          <input type="file" id="postPhoto" accept="image/*" />
+          <input type="text" id="postName" placeholder="Your Name" />
+          <textarea id="newPost" placeholder="Write a new post..."></textarea>
+          <button onclick="addPost()">Post</button>
+        </article>
+
+        <aside>
+          <div class="widget">
+            <h3>Categories</h3>
+            <div class="category-list" id="categoryList"></div>
+          </div>
+          <div class="widget">
+            <h3>Tags</h3>
+            <div class="tag-list" id="tagList">
+              <div class="tag-item" onclick="filterPostsByTag('Tag1')">
+                <img src="tag1.png" alt="Tag1" />
+                Tag1
+              </div>
+              <div class="tag-item" onclick="filterPostsByTag('Tag2')">
+                <img src="tag2.png" alt="Tag2" />
+                Tag2
+              </div>
+              <div class="tag-item" onclick="filterPostsByTag('Tag3')">
+                <img src="tag3.png" alt="Tag3" />
+                Tag3
+              </div>
+              <div class="tag-item" onclick="filterPostsByTag('')">
+                <img src="alltags.png" alt="All Tags" />
+                All Tags
+              </div>
+            </div>
+          </div>
+          <div class="widget recent-posts">
+            <h3>Recent Posts</h3>
+            <ul id="recentPosts"></ul>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+      function addPost() {
+        const postContent = document.getElementById("newPost").value;
+        const postName = document.getElementById("postName").value;
+        const postPhoto = document.getElementById("postPhoto").files[0];
+        const postCategory = document.getElementById("postCategory").value;
+        const postDate = new Date().toLocaleDateString();
+
+        if (postContent && postName && postCategory) {
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const post = {
+              content: postContent,
+              name: postName,
+              photo: event.target.result,
+              date: postDate,
+              category: postCategory,
+              tags: [],
+              comments: [],
+            };
+            posts.push(post);
+            localStorage.setItem("posts", JSON.stringify(posts));
+            document.getElementById("newPost").value = "";
+            document.getElementById("postName").value = "";
+            document.getElementById("postPhoto").value = "";
+            document.getElementById("postCategory").value = "";
+            renderPosts();
+            updateCategoryCounts();
+          };
+          reader.readAsDataURL(postPhoto);
+        } else {
+          alert("Please fill in all fields.");
+        }
+      }
+
+      function renderComments(comments, postIndex, showAll) {
+        const commentsToShow = showAll ? comments : comments.slice(0, 2);
+        return commentsToShow
+          .map(
+            (comment, index) => `
+                <div class="comment">
+                    <div class="user-info">
+                        <img src="${comment.photo}" alt="${comment.name}'s photo">
+                        <strong>${comment.name}</strong> <em>${comment.date}</em>
+                    </div>
+                    <p>${comment.content}</p>
+                    <button class="delete-button" onclick="deleteComment(${postIndex}, ${index})">Delete Comment</button>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function renderPosts(filterPostsArray = posts) {
+        const postContainer = document.getElementById("postContainer");
+        postContainer.innerHTML = "";
+
+        if (filterPostsArray.length === 0) {
+          postContainer.innerHTML =
+            "<p>No posts available for this category.</p>";
+        } else {
+          filterPostsArray.forEach((post, index) => {
+            const postDiv = document.createElement("div");
+            postDiv.innerHTML = `
+                        <div class="post">
+                            <div class="user-info">
+                                <img src="${post.photo}" alt="${
+              post.name
+            }'s photo">
+                                <strong>${post.name}</strong> <em>${
+              post.date
+            }</em>
+                            </div>
+                            <p>${post.content}</p>
+                            <button class="delete-button" onclick="deletePost(${index})">Delete Post</button>
+                            <div class="comments">
+                                <h4>${post.comments.length} Comment${
+              post.comments.length !== 1 ? "s" : ""
+            } on this post</h4>
+                                ${renderComments(
+                                  post.comments,
+                                  index,
+                                  post.comments.length <= 2
+                                )}
+                                ${
+                                  post.comments.length > 2
+                                    ? `<button onclick="toggleComments(${index})" id="toggle-btn-${index}">View All Comments</button>`
+                                    : ""
+                                }
+                                <div class="comment-form">
+                                    <input type="text" id="commenter-name-${index}" placeholder="Your Name" required>
+                                    <input type="text" id="commenter-photo-${index}" placeholder="Photo URL" required>
+                                    <textarea id="comment-text-${index}" placeholder="Your Comment" required></textarea>
+                                    <button onclick="addComment(${index})">Submit Comment</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            postContainer.appendChild(postDiv);
+          });
+        }
+      }
+
+      function toggleComments(postIndex) {
+        const post = posts[postIndex];
+        const commentsDiv = document.querySelector(
+          `#postContainer .post:nth-child(${postIndex + 1}) .comments`
+        );
+        const toggleButton = document.getElementById(`toggle-btn-${postIndex}`);
+
+        const isShowingAll = toggleButton.innerText === "View All Comments";
+        commentsDiv.innerHTML = `
+                <h4>${post.comments.length} Comment${
+          post.comments.length !== 1 ? "s" : ""
+        } on this post</h4>
+                ${renderComments(post.comments, postIndex, isShowingAll)}
+                <button onclick="toggleComments(${postIndex})" id="toggle-btn-${postIndex}">${
+          isShowingAll ? "View Less Comments" : "View All Comments"
+        }</button>
+                <div class="comment-form">
+                    <input type="text" id="commenter-name-${postIndex}" placeholder="Your Name" required>
+                    <input type="text" id="commenter-photo-${postIndex}" placeholder="Photo URL" required>
+                    <textarea id="comment-text-${postIndex}" placeholder="Your Comment" required></textarea>
+                    <button onclick="addComment(${postIndex})">Submit Comment</button>
+                </div>
+            `;
+      }
+
+      function addComment(postIndex) {
+        const name = document.getElementById(
+          `commenter-name-${postIndex}`
+        ).value;
+        const photoFile = document.getElementById(
+          `commenter-photo-${postIndex}`
+        ).files[0];
+        const content = document.getElementById(
+          `comment-text-${postIndex}`
+        ).value;
+        const date = new Date().toLocaleDateString();
+
+        if (name && photoFile && content) {
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            posts[postIndex].comments.push({
+              name,
+              photo: event.target.result,
+              date,
+              content,
+            });
+            localStorage.setItem("posts", JSON.stringify(posts)); // Save to localStorage
+            renderPosts(); // Re-render posts to reflect changes
+          };
+          reader.readAsDataURL(photoFile); // Read the uploaded file as Data URL
+        } else {
+          alert("Please fill in all fields.");
+        }
+      }
+
+      function deleteComment(postIndex, commentIndex) {
+        posts[postIndex].comments.splice(commentIndex, 1);
+        localStorage.setItem("posts", JSON.stringify(posts)); // Update local storage
+        renderPosts(); // Re-render posts to reflect changes
+      }
+
+      function deletePost(postIndex) {
+        posts.splice(postIndex, 1);
+        localStorage.setItem("posts", JSON.stringify(posts)); // Update local storage
+        renderPosts(); // Re-render posts to reflect changes
+      }
+
+      function updateCategoryCounts() {
+        const categoryList = document.getElementById("categoryList");
+        categoryList.innerHTML = ""; // Clear existing categories
+
+        const categories = [
+          "Coding Boot-camp",
+          "Admission",
+          "Summer Holiday Coaching",
+        ];
+
+        categories.forEach((category) => {
+          const count = posts.filter(
+            (post) => post.category === category
+          ).length;
+          const categoryDiv = document.createElement("div");
+          categoryDiv.className = "category-item";
+          categoryDiv.onclick = () => filterPosts(category);
+          categoryDiv.innerHTML = `
+                    <img src="${category
+                      .toLowerCase()
+                      .replace(/ /g, "-")}.png" alt="${category}" />
+                    ${category} (${count})
+                `;
+          categoryList.appendChild(categoryDiv);
+        });
+      }
+
+      function filterPosts(category) {
+        const filteredPosts = category
+          ? posts.filter((post) => post.category === category)
+          : posts;
+        renderPosts(filteredPosts);
+      }
+
+      function searchPosts() {
+        const query = document.getElementById("search").value.toLowerCase();
+        const filteredPosts = posts.filter(
+          (post) =>
+            post.content.toLowerCase().includes(query) ||
+            post.category.toLowerCase().includes(query) ||
+            (post.tags &&
+              post.tags.some((tag) => tag.toLowerCase().includes(query)))
+        );
+        renderPosts(filteredPosts.length > 0 ? filteredPosts : []);
+      }
+
+      window.onload = function () {
+        renderPosts();
+        updateCategoryCounts(); // Initialize category counts on load
+      };
+    </script>
+  </body>
+</html>
